@@ -1,0 +1,76 @@
+meta {
+  name: checkout-deposit
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/payments/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "reference_type": "deposit",
+    "reference_id": "{{checkoutReferenceId}}",
+    "success_path": "/",
+    "cancel_path": "/"
+  }
+}
+
+docs {
+  # Deal deposit checkout — honesty smoke.
+  #
+  # Unauthenticated (no access_token): auth gate fires first → 401.
+  # Authenticated + Stripe unset + a real deal id with a remaining deposit:
+  #   409 { code: "PAYMENTS_NOT_CONFIGURED", configured: false } — NEVER a
+  #   fabricated checkout URL.
+  # Authenticated + fake reference_id (default): 404 "Deal not found" (safe,
+  #   nothing is inserted before the config gate).
+  # Authenticated + Stripe configured + real deal: 200 with a REAL https URL.
+  #
+  # `checkoutReferenceId` defaults to a fake UUID so this never mutates data.
+}
+
+tests {
+  test("deposit checkout never 500s", function () {
+    expect(res.status).not.to.equal(500);
+  });
+
+  test("deposit checkout fails closed honestly when Stripe is unset", function () {
+    const hasToken = String(bru.getEnvVar("access_token") || "").trim().length > 0;
+    if (!hasToken) {
+      expect(res.status).to.equal(401);
+      expect(res.body).to.have.property("error");
+      return;
+    }
+    expect(res.status).to.be.oneOf([200, 400, 404, 409]);
+    if (res.status === 409) {
+      expect(res.body).to.have.property("code");
+      expect(res.body.code).to.equal("PAYMENTS_NOT_CONFIGURED");
+      expect(res.body.configured).to.equal(false);
+    } else if (res.status === 400 || res.status === 404) {
+      expect(res.body).to.have.property("error");
+    }
+  });
+
+  test("deposit checkout never returns a fabricated URL", function () {
+    if (res.status !== 200) {
+      expect(true).to.equal(true);
+      return;
+    }
+    expect(res.body).to.have.property("data");
+    expect(res.body.data).to.have.property("url");
+    expect(res.body.data.url).to.match(/^https?:\/\//);
+  });
+}

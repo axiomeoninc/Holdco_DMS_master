@@ -1,0 +1,51 @@
+meta {
+  name: invoices
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/invoices?limit=5&offset=0
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # CRM invoices (GET only — floors-safe)
+
+  Read-only list. Never POST/PATCH/DELETE in this collection.
+
+  Staging floor (Nova dealership reference): **invoices count ≥ 71**.
+  Floor asserts run only when `enableFloorAsserts` is `true` (staging env).
+  Local defaults to `false` so empty DBs do not fail the suite.
+}
+
+tests {
+  test("invoices list returns 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("invoices payload has data + count", function () {
+    expect(res.body).to.have.property("data");
+    expect(res.body).to.have.property("count");
+    expect(res.body.data).to.be.an("array");
+  });
+
+  test("invoices count meets floor when enabled", function () {
+    const enabled = String(bru.getEnvVar("enableFloorAsserts") || "") === "true";
+    if (!enabled) {
+      expect(true).to.equal(true);
+      return;
+    }
+    const floor = Number(bru.getEnvVar("floorInvoices") || 71);
+    expect(res.body.count).to.be.at.least(floor);
+  });
+}

@@ -1,0 +1,45 @@
+meta {
+  name: quotation-send
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/quotations/{{smokeReferenceId}}/send
+  body: json
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "to": "smoke-probe@example.com"
+  }
+}
+
+docs {
+  # Email a quotation (Resend + PDF attachment) — send logic MUST be gated.
+  #
+  # No Authorization header is sent on purpose. The key contract: the auth
+  # gate (401) fires BEFORE any send logic — we must never see a 503/502
+  # "Resend not configured" or a 500/404 from an unauthenticated caller.
+  #
+  # `smokeReferenceId` defaults to a fake UUID; even with auth it would 404
+  # before any email is sent, so this smoke never sends mail.
+}
+
+tests {
+  test("quotation send rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("unauthenticated send is rejected before any email logic", function () {
+    expect(res.status).not.to.equal(503);
+    expect(res.status).not.to.equal(502);
+    expect(res.status).not.to.equal(500);
+    expect(res.body).to.have.property("error");
+  });
+}

@@ -1,0 +1,3 @@
+# Placeholder for ZAP baseline artifacts / local notes.
+# CI uses tests/security/zap/.zap-rules.tsv against STAGING_BASE_URL only.
+# Never run ZAP soak or authenticated spider against production in v1.

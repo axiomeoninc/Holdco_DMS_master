@@ -1,0 +1,77 @@
+name: E2E
+
+on:
+  pull_request:
+  workflow_dispatch:
+  # Optional post-deploy hook from another workflow via workflow_call
+  workflow_call:
+
+concurrency:
+  group: e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  playwright:
+    name: Playwright + axe
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright
+        env:
+          # Config defaults to https://app.flashfender.com when unset
+          PLAYWRIGHT_BASE_URL: ${{ vars.PLAYWRIGHT_BASE_URL }}
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          CI: "true"
+        # Specs skip authenticated cases when E2E_* secrets are unset
+        run: npx playwright test --project=desktop
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  api-smoke:
+    name: API smoke (Bruno, staging)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Bruno API smoke (staging, live prod)
+        # Scoped to the smoke folder only (recursive) — NOT the whole
+        # collection, which contains token-requiring requests that would fail.
+        # Must run from the collection root (tests/api/bruno). @usebruno/cli
+        # is fetched via npx since it is not a project dependency. With an
+        # empty access_token the auth-gate requests assert 401 and the
+        # payments probes assert honest fail-closed states.
+        working-directory: tests/api/bruno
+        env:
+          CI: "true"
+        run: npx -y @usebruno/cli run smoke --env staging -r

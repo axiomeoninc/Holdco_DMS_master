@@ -1,0 +1,50 @@
+{
+  "lane": "L10",
+  "base": "https://app.flashfender.com",
+  "login": {
+    "status": 200
+  },
+  "me": {
+    "status": 200
+  },
+  "dealer_settings_present": {
+    "business_name": true,
+    "dealer_license": false,
+    "hst_number": false
+  },
+  "vehicles": {
+    "status": 200,
+    "count": 158
+  },
+  "deals": {
+    "status": 200,
+    "count": 78
+  },
+  "invoices": {
+    "status": 200,
+    "count": 72
+  },
+  "bill_of_sale": {
+    "status": 200,
+    "count": 0,
+    "page_len": 0
+  },
+  "mvda_probe_candidate": {
+    "id": "244c546b-9d60-4138-8234-148c1c0b695c",
+    "status": "Active",
+    "known_damage_before": false,
+    "has_disclosure_before": false
+  },
+  "mvda_clear_disclosure_reject": {
+    "status": 400,
+    "error": "Known damage is flagged \u2014 add disclosure notes before publishing as Active (MVDA).",
+    "pass": true
+  },
+  "mvda_no_persist": {
+    "known_damage": false,
+    "disclosure": null,
+    "unchanged_damage_flag": true
+  },
+  "bill_of_sale_unauth": 401,
+  "floors_ok": true
+}

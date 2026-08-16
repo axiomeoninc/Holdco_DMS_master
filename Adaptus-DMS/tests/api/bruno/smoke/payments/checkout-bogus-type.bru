@@ -1,0 +1,56 @@
+meta {
+  name: checkout-bogus-type
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/payments/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "reference_type": "bogus",
+    "reference_id": "{{checkoutReferenceId}}"
+  }
+}
+
+docs {
+  # Invalid reference_type is rejected by validation BEFORE any checkout logic.
+  #
+  # Unauthenticated (no access_token): the auth gate fires first → 401.
+  # Authenticated: 400 + "reference_type must be one of: invoice, deal, deposit, bill_of_sale".
+  #
+  # `checkoutReferenceId` defaults to a fake UUID (00000000-...) so this is a
+  # pure validation probe — no record is ever touched.
+}
+
+tests {
+  test("bogus reference_type never 500s", function () {
+    expect(res.status).not.to.equal(500);
+  });
+
+  test("bogus reference_type is rejected before any checkout", function () {
+    const hasToken = String(bru.getEnvVar("access_token") || "").trim().length > 0;
+    if (hasToken) {
+      expect(res.status).to.equal(400);
+      expect(res.body).to.have.property("error");
+      expect(res.body.error).to.contain("reference_type must be one of");
+    } else {
+      // Auth gates before validation when unauthenticated.
+      expect(res.status).to.equal(401);
+      expect(res.body).to.have.property("error");
+    }
+  });
+}

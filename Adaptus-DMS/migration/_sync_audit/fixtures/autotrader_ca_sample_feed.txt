@@ -1,0 +1,6 @@
+# AutoTrader Canada sample feed (fixture — not production PII)
+# Format: pipe-delimited, no header row (DealerTeam autotrader.ca OFT column order)
+# Column count: 37 — see src/lib/syndication/autotrader.ts AUTOTRADER_CA_COLUMNS
+# Generated for Phase 2 Lane A signoff. Example.com images are placeholders.
+
+1|DEMO-COMPANY|FF-DEMO-001|1HGCM82633A004352|Available|2020|Honda|Civic|EX|45210|Crystal Black|Black|Gasoline|FWD|1.5L Turbo|CVT|4|18995|Backup Camera,Apple CarPlay,Heated Seats|Fixture unit for AutoTrader.ca feed format proof. Not production inventory.|https://example.com/demo/civic-main.jpg||https://example.com/demo/civic-2.jpg|||||Toronto|||||||Sedan||

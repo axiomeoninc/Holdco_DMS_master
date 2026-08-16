@@ -1,0 +1,29 @@
+meta {
+  name: webhooks
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/api/webhooks
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Webhook CRUD — must be auth-gated.
+  # Contract: unauthenticated → 401 (never 404).
+}
+
+tests {
+  test("webhooks rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("webhooks 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}

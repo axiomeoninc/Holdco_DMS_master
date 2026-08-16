@@ -1,0 +1,47 @@
+/**
+ * Whitelisted vehicle write fields (POST / PATCH / PUT).
+ * Keep in sync with vehicles table + Hillz inventory form map.
+ */
+export const VEHICLE_ALLOWED_FIELDS = [
+    "vin",
+    "year",
+    "make",
+    "model",
+    "trim",
+    "odometer",
+    "stock_number",
+    "condition",
+    "status",
+    "purchase_price",
+    "retail_price",
+    "extra_costs",
+    "taxes",
+    "image_gallery",
+    "description",
+    "engine",
+    "body_style",
+    "fuel_type",
+    "transmission",
+    "drivetrain",
+    "exterior_color",
+    "interior_color",
+    "features",
+    "carfax_report_url",
+    "purchased_from",
+    "fuel_capacity",
+    "city_fuel",
+    "highway_fuel",
+    "doors",
+    "passengers",
+    "msrp",
+    "title_status",
+    "special_price",
+    "warranty",
+    "disclosure",
+    "known_damage",
+    "internal_notes",
+    "youtube_url",
+    "inspection_report_url",
+] as const;
+
+export type VehicleWritableField = (typeof VEHICLE_ALLOWED_FIELDS)[number];

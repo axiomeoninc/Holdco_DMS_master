@@ -1,0 +1,60 @@
+meta {
+  name: vehicles-public-scope
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/vehicles/public?{{publicScope}}
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Public Active inventory WITH a dealership scope → 200.
+  #
+  # Set the `publicScope` env var to a query fragment for a dealership that
+  # has public Active inventory, e.g.:
+  #   slug=nova
+  #   dealership_id=<uuid>
+  # When `publicScope` is empty this request is SKIPPED (no assertion runs).
+  #
+  # Contract: 200 + { dealership, data: [], count } and no full VIN leak
+  # (vin_masked is null or masked).
+}
+
+script:pre-request {
+  const scope = String(bru.getEnvVar("publicScope") || "").trim();
+  if (!scope) {
+    bru.runner.skipRequest();
+  }
+}
+
+tests {
+  test("vehicles/public with scope returns 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("vehicles/public returns dealership + array payload", function () {
+    expect(res.body).to.have.property("dealership");
+    expect(res.body.dealership).to.have.property("id");
+    expect(res.body).to.have.property("data");
+    expect(res.body.data).to.be.an("array");
+    expect(res.body).to.have.property("count");
+  });
+
+  test("vehicles/public never leaks a full VIN", function () {
+    if (res.body.data.length === 0) {
+      expect(true).to.equal(true);
+      return;
+    }
+    for (const v of res.body.data) {
+      if (typeof v.vin_masked === "string" && v.vin_masked.length >= 12) {
+        expect(v.vin_masked).to.contain("\u2026");
+      }
+    }
+  });
+}

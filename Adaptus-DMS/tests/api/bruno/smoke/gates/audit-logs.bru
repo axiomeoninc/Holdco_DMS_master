@@ -1,0 +1,29 @@
+meta {
+  name: audit-logs
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/audit-logs
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Auth gate: unauthenticated → 401 (never 404).
+  # No Authorization header is sent on purpose — the 401 IS the assertion.
+}
+
+tests {
+  test("audit-logs rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("audit-logs 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}

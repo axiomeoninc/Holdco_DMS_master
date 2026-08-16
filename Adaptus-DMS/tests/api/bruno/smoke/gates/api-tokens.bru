@@ -1,0 +1,29 @@
+meta {
+  name: api-tokens
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/settings/api-tokens
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # API token management — must be auth-gated.
+  # Contract: unauthenticated → 401 (never 404).
+}
+
+tests {
+  test("settings/api-tokens rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("settings/api-tokens 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}

@@ -1,0 +1,36 @@
+name = "flashfender-dms"
+main = "src/worker.ts"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = ".open-next/assets", binding = "ASSETS", run_worker_first = true }
+
+# Non-secret environment variables
+[vars]
+NEXT_PUBLIC_SUPABASE_URL = "https://zwfeitodxikdwymkieai.supabase.co"
+NEXTJS_ENV = "production"
+APP_URL = "https://app.flashfender.com"
+
+# Secrets will be set via:
+# wrangler secret put NEXT_PUBLIC_SUPABASE_ANON_KEY
+#   (anon JWT must NOT be committed; set via wrangler secret or Cloudflare
+#    dashboard env — not [vars] in git)
+# wrangler secret put IMPERSONATE_STASH_SECRET
+#   (AES-256-GCM key material for the impersonation stash cookie)
+# wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+# wrangler secret put FACEBOOK_APP_ID
+# wrangler secret put FACEBOOK_APP_SECRET
+# wrangler secret put SOCIAL_CRON_SECRET
+# wrangler secret put CRM_CRON_SECRET   # optional; falls back to SOCIAL_CRON_SECRET for email due-send
+# wrangler secret put OPENAI_API_KEY   # optional AI captions
+# wrangler secret put MINIMAX_API_KEY  # Flash AI desk (server-only; never show in UI)
+# wrangler secret put RESEND_API_KEY   # OTP + forgot-password + CRM sequences (required for live email)
+# wrangler secret put EMAIL_FROM       # e.g. FlashFender <noreply@flashfender.com>
+
+# Hourly: social publish-scheduled + CRM email-sequences/send-due
+# Requires cron secret(s). Without Resend, send-due returns 503 (no fake sent).
+[triggers]
+crons = ["0 * * * *"]
+
+[[routes]]
+pattern = "app.flashfender.com/*"
+zone_name = "flashfender.com"

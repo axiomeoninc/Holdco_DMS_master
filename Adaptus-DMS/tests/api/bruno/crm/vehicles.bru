@@ -1,0 +1,53 @@
+meta {
+  name: vehicles
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/vehicles?limit=5&offset=0
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # CRM vehicles (GET only — floors-safe)
+
+  Read-only list. Never POST/PATCH/DELETE in this collection.
+
+  Staging floor (Nova dealership reference): **vehicles count ≥ 158**.
+  Deals floor (≥77) is documented for smoke checklists but not asserted here
+  (no deals request in this v1 CRM folder).
+
+  Floor asserts run only when `enableFloorAsserts` is `true` (staging env).
+}
+
+tests {
+  test("vehicles list returns 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("vehicles payload has data + count", function () {
+    expect(res.body).to.have.property("data");
+    expect(res.body).to.have.property("count");
+    expect(res.body.data).to.be.an("array");
+  });
+
+  test("vehicles count meets floor when enabled", function () {
+    const enabled = String(bru.getEnvVar("enableFloorAsserts") || "") === "true";
+    if (!enabled) {
+      expect(true).to.equal(true);
+      return;
+    }
+    const floor = Number(bru.getEnvVar("floorVehicles") || 158);
+    expect(res.body.count).to.be.at.least(floor);
+  });
+}

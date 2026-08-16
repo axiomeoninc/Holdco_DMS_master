@@ -1,0 +1,29 @@
+meta {
+  name: reviews-settings
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/reviews/settings
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Reviews settings — dealership data, must be auth-gated.
+  # Contract: unauthenticated → 401 (never 404).
+}
+
+tests {
+  test("reviews/settings rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("reviews/settings 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}

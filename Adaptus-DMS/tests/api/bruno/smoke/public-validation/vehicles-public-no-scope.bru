@@ -1,0 +1,31 @@
+meta {
+  name: vehicles-public-no-scope
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/vehicles/public
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Public Active inventory MUST be dealership-scoped (id, slug, or token).
+  # No scope → honest 400 validation, never a broad anonymous dump.
+  # Contract: 400 + "Missing dealership scope".
+}
+
+tests {
+  test("vehicles/public without scope returns 400", function () {
+    expect(res.status).to.equal(400);
+  });
+
+  test("vehicles/public 400 explains the missing scope", function () {
+    expect(res.body).to.have.property("error");
+    expect(res.body.error).to.contain("Missing dealership scope");
+  });
+}

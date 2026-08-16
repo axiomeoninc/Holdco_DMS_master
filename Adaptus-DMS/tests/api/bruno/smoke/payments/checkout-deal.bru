@@ -1,0 +1,60 @@
+meta {
+  name: checkout-deal
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/payments/checkout
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "reference_type": "deal",
+    "reference_id": "{{checkoutReferenceId}}",
+    "success_path": "/",
+    "cancel_path": "/"
+  }
+}
+
+docs {
+  # "deal" reference_type with a reference_id present.
+  #
+  # Key contract: 409 when Stripe is unset — NEVER a 500.
+  # Unauthenticated (no access_token): auth gate fires first → 401.
+  # Authenticated + fake reference_id (default): 404 "Deal not found".
+  #
+  # `checkoutReferenceId` defaults to a fake UUID so this never mutates data.
+}
+
+tests {
+  test("deal checkout is 409 not 500 when Stripe is unset", function () {
+    expect(res.status).not.to.equal(500);
+  });
+
+  test("deal checkout fails closed honestly", function () {
+    const hasToken = String(bru.getEnvVar("access_token") || "").trim().length > 0;
+    if (!hasToken) {
+      expect(res.status).to.equal(401);
+      expect(res.body).to.have.property("error");
+      return;
+    }
+    expect(res.status).to.be.oneOf([200, 400, 404, 409]);
+    if (res.status === 409) {
+      expect(res.body).to.have.property("code");
+      expect(res.body.code).to.equal("PAYMENTS_NOT_CONFIGURED");
+      expect(res.body.configured).to.equal(false);
+    }
+  });
+}

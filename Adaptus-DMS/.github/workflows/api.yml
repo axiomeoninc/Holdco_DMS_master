@@ -1,0 +1,63 @@
+name: API (Bruno)
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bruno:
+    name: Bruno collection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install Bruno CLI
+        run: npm install -g @usebruno/cli
+
+      - name: Resolve target
+        id: target
+        env:
+          STAGING_BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          BRUNO_EMAIL: ${{ secrets.BRUNO_EMAIL }}
+          BRUNO_PASSWORD: ${{ secrets.BRUNO_PASSWORD }}
+        run: |
+          if [ -z "$STAGING_BASE_URL" ] || [ -z "$BRUNO_EMAIL" ] || [ -z "$BRUNO_PASSWORD" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Skipping Bruno: need secrets STAGING_BASE_URL, BRUNO_EMAIL, BRUNO_PASSWORD."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            case "$STAGING_BASE_URL" in
+              *app.flashfender.com*|https://flashfender.com*|http://flashfender.com*)
+                echo "::error::Refusing Bruno against production URL in secrets."
+                exit 1
+                ;;
+            esac
+          fi
+
+      - name: Run Bruno (staging)
+        if: steps.target.outputs.skip != 'true'
+        working-directory: tests/api/bruno
+        env:
+          STAGING_BASE_URL: ${{ secrets.STAGING_BASE_URL }}
+          BRUNO_EMAIL: ${{ secrets.BRUNO_EMAIL }}
+          BRUNO_PASSWORD: ${{ secrets.BRUNO_PASSWORD }}
+          BRUNO_TARGET_USER_ID: ${{ secrets.BRUNO_TARGET_USER_ID }}
+        run: |
+          bru run --env staging \
+            --env-var "baseUrl=${STAGING_BASE_URL}" \
+            --env-var "email=${BRUNO_EMAIL}" \
+            --env-var "password=${BRUNO_PASSWORD}" \
+            --env-var "targetUserId=${BRUNO_TARGET_USER_ID:-}" \
+            --env-var "enableFloorAsserts=true"

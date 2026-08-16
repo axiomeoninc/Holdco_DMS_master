@@ -1,0 +1,29 @@
+meta {
+  name: platform-audit-logs
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/platform/audit-logs
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Platform-scoped audit trail — must be auth-gated like its sibling.
+  # Contract: unauthenticated → 401 (never 404).
+}
+
+tests {
+  test("platform audit-logs rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("platform audit-logs 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}

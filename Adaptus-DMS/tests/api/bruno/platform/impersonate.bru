@@ -1,0 +1,50 @@
+meta {
+  name: impersonate
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/platform/impersonate
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "targetUserId": "{{targetUserId}}"
+  }
+}
+
+script:pre-request {
+  if (!bru.getEnvVar("targetUserId")) {
+    bru.runner.skipRequest();
+  }
+}
+
+docs {
+  # Platform impersonate (session swap)
+
+  Requires a **platform admin** bearer token from `auth/login`.
+  Set `targetUserId` to a non-admin active dealership user.
+
+  Skipped when `targetUserId` is empty (see collection README).
+  Cookie stash is set on the response; follow with CRM reads, then `exit`.
+}
+
+tests {
+  test("impersonate succeeds", function () {
+    expect(res.status).to.equal(200);
+    expect(res.body.success).to.equal(true);
+    expect(res.body.impersonation_mode).to.equal(true);
+  });
+}

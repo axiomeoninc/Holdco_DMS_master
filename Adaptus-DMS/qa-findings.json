@@ -1,0 +1,60 @@
+{
+  "app": "FlashFender desk (Adaptus-DMS)",
+  "url": "https://app.flashfender.com",
+  "branch": "qa/gold-standard-2026-08-15",
+  "baselineSha": "edfcef39dff6bde9329f1f418abf84366f32062c",
+  "baselineTag": null,
+  "date": "2026-08-15",
+  "supabase": "zwfeitodxikdwymkieai",
+  "verdict": "READY WITH CONDITIONS",
+  "deployPerformed": false,
+  "counts": {
+    "open": { "sev1": 0, "sev2": 0, "sev3": 1 },
+    "fixed": { "sev1": 1, "sev2": 0, "sev3": 2 }
+  },
+  "phase0": {
+    "typecheck": "pass after FF-001 (8GB heap)",
+    "vitest": { "passed": 142 },
+    "lint": "0 errors on prefer-const after FF-002; warnings remain",
+    "playwrightDesktopCritical": { "passed": 25, "failed": 0 },
+    "auditRoutes": { "pages": 72, "apis": 153 },
+    "checkTenantVin": "ok"
+  },
+  "findings": [
+    {
+      "id": "FF-001",
+      "sev": 3,
+      "status": "FIXED",
+      "title": "resolveVehicleId union missing needsActAs"
+    },
+    {
+      "id": "FF-002",
+      "sev": 3,
+      "status": "FIXED",
+      "title": "prefer-const lint errors on invoices and roles GETs"
+    },
+    {
+      "id": "FF-003",
+      "sev": 1,
+      "status": "FIXED",
+      "deployed": false,
+      "title": "Platform-unscoped GET lists for bill-of-sale, OCR, finance-calculations"
+    },
+    {
+      "id": "FF-004",
+      "sev": 3,
+      "status": "OPEN",
+      "title": "Stripe checkout missing idempotency key"
+    }
+  ],
+  "notAudited": [
+    "full screenshot grid",
+    "VoiceOver/NVDA",
+    "backup restore",
+    "k6 10x load",
+    "webhook timeouts",
+    "Lighthouse CWV",
+    "Sentry dashboards",
+    "live Drip JWT vs Nova IDs on Worker"
+  ]
+}

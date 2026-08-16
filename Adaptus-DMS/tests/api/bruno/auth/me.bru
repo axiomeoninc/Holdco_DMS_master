@@ -1,0 +1,30 @@
+meta {
+  name: me
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/me
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{access_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+tests {
+  test("me returns 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("me returns profile data", function () {
+    expect(res.body).to.have.property("data");
+    expect(res.body.data).to.have.property("email");
+  });
+}

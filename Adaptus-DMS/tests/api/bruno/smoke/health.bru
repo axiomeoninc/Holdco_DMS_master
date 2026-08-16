@@ -1,0 +1,31 @@
+meta {
+  name: health
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/health
+  body: none
+}
+
+docs {
+  # Public liveness probe — no auth, no DB.
+  # Contract: 200 + { ok: true }.
+}
+
+tests {
+  test("health returns 200", function () {
+    expect(res.status).to.equal(200);
+  });
+
+  test("health reports ok:true", function () {
+    expect(res.body).to.have.property("ok");
+    expect(res.body.ok).to.equal(true);
+  });
+
+  test("health identifies the service", function () {
+    expect(res.body).to.have.property("service");
+    expect(res.body.service).to.be.a("string");
+  });
+}

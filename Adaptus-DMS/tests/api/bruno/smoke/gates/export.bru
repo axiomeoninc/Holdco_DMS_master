@@ -1,0 +1,29 @@
+meta {
+  name: export
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/api/export
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Full dealership data export — Admin/Manager only, auth-gated first.
+  # Contract: unauthenticated → 401 (never 404, never a download).
+}
+
+tests {
+  test("export rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("export 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}

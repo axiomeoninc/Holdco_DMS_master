@@ -1,0 +1,320 @@
+{
+  "base": "https://app.flashfender.com",
+  "nova": "dd404bb6-3e64-43ae-9eb7-98095033c6cb",
+  "unauth": {
+    "status": 401,
+    "error": "Unauthorized - No valid session"
+  },
+  "admin_login": {
+    "status": 200,
+    "role": "Admin",
+    "dealership_id": "dd404bb6-3e64-43ae-9eb7-98095033c6cb",
+    "is_platform_admin": null
+  },
+  "admin_me": {
+    "status": 200,
+    "dealership_id": null,
+    "role": null,
+    "is_platform_admin": null,
+    "keys": [
+      "data"
+    ]
+  },
+  "admin_report_types": {
+    "summary": {
+      "status": 200,
+      "reportType": "summary",
+      "error": null,
+      "keys": [
+        "expenses",
+        "inventory",
+        "leads",
+        "profit",
+        "sales"
+      ],
+      "inventory": {
+        "totalVehicles": 158,
+        "activeVehicles": 81,
+        "soldVehicles": 77
+      }
+    },
+    "sales": {
+      "status": 200,
+      "reportType": "sales",
+      "error": null,
+      "keys": [
+        "salesByDate",
+        "summary",
+        "topSalespeople"
+      ],
+      "summary": {
+        "totalRevenue": 0,
+        "totalDeals": 0,
+        "avgDealPrice": 0,
+        "frontEndGross": 0,
+        "costOfSales": 0
+      },
+      "topSalespeople_len": 0
+    },
+    "inventory": {
+      "status": 200,
+      "reportType": "inventory",
+      "error": null,
+      "keys": [
+        "agingBuckets",
+        "byMake",
+        "byStatus",
+        "summary"
+      ],
+      "summary": {
+        "totalVehicles": 158,
+        "activeVehicles": 81,
+        "totalInventoryValue": 2560142,
+        "totalInventoryCost": 2560142,
+        "potentialProfit": 0,
+        "agingCount": 0
+      },
+      "agingBuckets": {
+        "0-30": 81,
+        "31-60": 0,
+        "61-90": 0,
+        "90+": 0
+      }
+    },
+    "financial": {
+      "status": 200,
+      "reportType": "financial",
+      "error": null,
+      "keys": [
+        "expensesByCategory",
+        "outstandingInvoices",
+        "summary"
+      ],
+      "summary": {
+        "totalRevenue": 0,
+        "totalExpenses": 0,
+        "netIncome": 0,
+        "profitMargin": 0
+      }
+    },
+    "leads": {
+      "status": 200,
+      "reportType": "leads",
+      "error": null,
+      "keys": [
+        "bySource",
+        "byStatus",
+        "summary"
+      ],
+      "summary": {
+        "totalLeads": 140,
+        "newLeads": 110,
+        "convertedLeads": 0,
+        "conversionRate": 0
+      }
+    },
+    "expenses": {
+      "status": 200,
+      "reportType": "expenses",
+      "error": null,
+      "keys": [
+        "byCategory",
+        "byStatus",
+        "summary"
+      ],
+      "summary": {
+        "totalExpenses": 0,
+        "paidExpenses": 0,
+        "pendingExpenses": 0,
+        "expenseCount": 0
+      }
+    },
+    "salesperson": {
+      "status": 200,
+      "reportType": "salesperson",
+      "error": null,
+      "keys": [
+        "bySalesperson",
+        "note",
+        "summary"
+      ],
+      "summary": {
+        "deals": 0,
+        "revenue": 0,
+        "frontEndGross": 0,
+        "commission": 0
+      },
+      "bySalesperson_len": 0,
+      "bySalesperson_sample": []
+    },
+    "commissions": {
+      "status": 200,
+      "reportType": "salesperson",
+      "error": null,
+      "keys": [
+        "bySalesperson",
+        "note",
+        "summary"
+      ],
+      "summary": {
+        "deals": 0,
+        "revenue": 0,
+        "frontEndGross": 0,
+        "commission": 0
+      },
+      "bySalesperson_len": 0,
+      "bySalesperson_sample": []
+    }
+  },
+  "expenses_date_filter": {
+    "unscoped_status": 200,
+    "unscoped_count": 0,
+    "future_status": 200,
+    "future_count": 0,
+    "shrinks": true
+  },
+  "inventory_floor": {
+    "totalVehicles": 158,
+    "activeVehicles": 81,
+    "ok_ge_158": true
+  },
+  "reports_page": {
+    "status": 200,
+    "has_error_boundary": false,
+    "has_commissions_marker": true
+  },
+  "sp_login": {
+    "status": 200,
+    "role": "Salesperson",
+    "error": null
+  },
+  "sp_me": {
+    "status": 200,
+    "dealership_id": null,
+    "role": null
+  },
+  "sp_report_types": {
+    "summary": {
+      "status": 200,
+      "reportType": "summary",
+      "error": null,
+      "keys": [
+        "expenses",
+        "inventory",
+        "leads",
+        "profit",
+        "sales"
+      ],
+      "inventory": {
+        "totalVehicles": 158,
+        "activeVehicles": 81,
+        "soldVehicles": 77
+      }
+    },
+    "sales": {
+      "status": 200,
+      "reportType": "sales",
+      "error": null,
+      "keys": [
+        "salesByDate",
+        "summary",
+        "topSalespeople"
+      ],
+      "summary": {
+        "totalRevenue": 0,
+        "totalDeals": 0,
+        "avgDealPrice": 0,
+        "frontEndGross": 0,
+        "costOfSales": 0
+      },
+      "topSalespeople_len": 0
+    },
+    "inventory": {
+      "status": 200,
+      "reportType": "inventory",
+      "error": null,
+      "keys": [
+        "agingBuckets",
+        "byMake",
+        "byStatus",
+        "summary"
+      ],
+      "summary": {
+        "totalVehicles": 158,
+        "activeVehicles": 81,
+        "totalInventoryValue": 2560142,
+        "totalInventoryCost": 2560142,
+        "potentialProfit": 0,
+        "agingCount": 0
+      },
+      "agingBuckets": {
+        "0-30": 81,
+        "31-60": 0,
+        "61-90": 0,
+        "90+": 0
+      }
+    },
+    "financial": {
+      "status": 200,
+      "reportType": "financial",
+      "error": null,
+      "keys": [
+        "expensesByCategory",
+        "outstandingInvoices",
+        "summary"
+      ],
+      "summary": {
+        "totalRevenue": 0,
+        "totalExpenses": 0,
+        "netIncome": 0,
+        "profitMargin": 0
+      }
+    },
+    "salesperson": {
+      "status": 200,
+      "reportType": "salesperson",
+      "error": null,
+      "keys": [
+        "bySalesperson",
+        "note",
+        "summary"
+      ],
+      "summary": {
+        "deals": 0,
+        "revenue": 0,
+        "frontEndGross": 0,
+        "commission": 0
+      },
+      "bySalesperson_len": 0,
+      "bySalesperson_sample": []
+    },
+    "commissions": {
+      "status": 200,
+      "reportType": "salesperson",
+      "error": null,
+      "keys": [
+        "bySalesperson",
+        "note",
+        "summary"
+      ],
+      "summary": {
+        "deals": 0,
+        "revenue": 0,
+        "frontEndGross": 0,
+        "commission": 0
+      },
+      "bySalesperson_len": 0,
+      "bySalesperson_sample": []
+    }
+  },
+  "sp_inventory_scoped": {
+    "totalVehicles": 158,
+    "matches_nova_floor": true,
+    "not_absurdly_high": true
+  },
+  "sp_foreign_dealership_param": {
+    "status": 200,
+    "totalVehicles": 158,
+    "error": null
+  }
+}

@@ -1,0 +1,29 @@
+meta {
+  name: accounting-export
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/api/accounting/export
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Accounting journal export (IIF/CSV) — must be auth-gated.
+  # Contract: unauthenticated → 401 (never 404). GET-only smoke; no download side effects.
+}
+
+tests {
+  test("accounting/export rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("accounting/export 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}

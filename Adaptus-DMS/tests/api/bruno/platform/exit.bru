@@ -1,0 +1,36 @@
+meta {
+  name: exit
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/platform/impersonate/exit
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/json
+}
+
+script:pre-request {
+  if (!bru.getEnvVar("targetUserId")) {
+    bru.runner.skipRequest();
+  }
+}
+
+docs {
+  # Exit impersonation
+
+  Restores the stashed platform-admin session from the impersonate cookie.
+  Must run in the same cookie jar as `impersonate` (Bruno CLI preserves cookies).
+  Skipped when `targetUserId` is empty (impersonate was skipped).
+}
+
+tests {
+  test("exit restores admin", function () {
+    expect(res.status).to.equal(200);
+    expect(res.body.success).to.equal(true);
+  });
+}

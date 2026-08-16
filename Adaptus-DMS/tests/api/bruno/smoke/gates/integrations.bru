@@ -1,0 +1,29 @@
+meta {
+  name: integrations
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/settings/integrations
+  body: none
+}
+
+headers {
+  Accept: application/json
+}
+
+docs {
+  # Integration status (env-gated, never leaks secrets) — must be auth-gated.
+  # Contract: unauthenticated → 401 (never 404).
+}
+
+tests {
+  test("settings/integrations rejects unauthenticated requests with 401", function () {
+    expect(res.status).to.equal(401);
+  });
+
+  test("settings/integrations 401 body carries an error", function () {
+    expect(res.body).to.have.property("error");
+  });
+}
