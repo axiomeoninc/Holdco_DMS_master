@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+
+# Build / dev artifacts
+.next/
+.open-next/
+.wrangler/
+.wrangler-dry/
+_dist/
+out/
+dist/
+web-build/
+expo-env.d.ts
+
+# Cloudflare / OpenNext
+_worker.js.bak
+
+# Next.js / Expo / Playwright
+.test-results/
+playwright-report/
+coverage/
+.storybook-static/
+
+# Local env files and secrets (per-app .gitignore also covers most of these)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+.dev.vars
+
+# Secrets (never commit)
+*.pem
+*.p12
+*.jks
+*.p8
+*.key
+*SECRETS.md
+*SECRETS_CHECKLIST.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large local backup / PII dumps
+*.zip
+_sync_audit/
+
+# Cursor workspace
+.cursor/
+
+# Mobile generated folders
+ios/
+android/
